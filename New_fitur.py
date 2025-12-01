@@ -39,3 +39,50 @@ def hapus_produk():
         print(df)
     else:
         print('ERROR Kode tidak ada')
+
+#Fitur update Stok
+def Update_stok():
+    global df
+    print('Stok produk Saat ini') 
+    print(df)
+
+    user = int(input('Masukan Kode Produk yang ingin di update: '))
+    
+    # Cek Kode Produk dan update
+    if user in df['Kode'].values:
+        print('Check kode berhasil')
+        option = input("Mau update apa (Stok/Harga)")
+
+        #Update Stok
+        if option.lower() == 'stok':
+            user1 = int(input('Tuliskan stok yang baru: ')) 
+
+            #Konfirmasi
+            konfirmasi = input("Yakin ingin Update produk ini? (y/n)")
+            if konfirmasi.lower() != 'y':
+                print('Dibatalkan')
+                return
+            
+            df.loc[df['Kode'] == user,'Stok'] = user1
+            print('Data Stok telah diperbarui')
+
+        #Update Harga
+        elif option.lower() == 'harga':
+            user2 = int(input("Masukan harga yang baru"))
+
+            #Konfirmasi
+            konfirmasi = input("Yakin ingin menghapus produk ini? (y/n)")
+            if konfirmasi.lower() != 'y':
+                print('Dibatalkan')
+                return
+
+            df.loc[df['Kode'] == user, 'Harga'] = user2
+            print('Data Harga telah diperbarui')
+        else:
+            print('Pilihan tidak ditemukan')
+
+    else:
+        print("Kode tidak ditemukan")
+
+    
+
