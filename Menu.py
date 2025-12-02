@@ -1,4 +1,4 @@
-from Database import barang,cart,lihat_data
+from Database import barang,cart,lihat_data,laporan_penjualan
 from New_fitur import tambah_produk,hapus_produk,Update_stok
 
 while True:
@@ -10,6 +10,7 @@ while True:
     4. Tambah Produk
     5. Hapus Produk
     6. Update Stok/Harga
+    7. Laporan penjualan harian
     """)
 
     user = input('Pilih salah satu menu : ')
@@ -31,3 +32,6 @@ while True:
 
     elif user == '6':
         Update_stok()
+
+    elif user == '7':
+        laporan_penjualan()

@@ -18,9 +18,24 @@ def cari_produk(kode):
             return None
        return data.iloc[0]
 
+# Fitur Total penjualan
+Data_Penjualan = []
+def laporan_penjualan ():
 
-
-
+    if len (Data_Penjualan) == 0:
+        print('Belum ada transaksi')
+        return 
+    else:
+        print("\n===== LAPORAN PENJUALAN HARI INI =====")
+        total_semua = sum(Data_Penjualan)
+        print(f'total semua penjualan hari ini adalaha = {total_semua}')
+        jumlah_transaksi = len(Data_Penjualan)
+        print(f'jumlah transaksi hari ini adalah = {jumlah_transaksi}')
+        rata_rata = total_semua/jumlah_transaksi
+        print(f'rata-rata transaksi hari ini adalah = {rata_rata}')
+        for i, trx in enumerate(Data_Penjualan,start=1):
+            print(f'{i}.Rp {trx}')
+    
 
 #Fitur pemilihan barang
 def barang ():
@@ -48,7 +63,9 @@ def barang ():
     #Pengecekan stok
     if jumlah > stok_Lama:
       print('Stok tidak cukup')
+      return
 
+    #kuarangi stok
     stok_Baru = stok_Lama - jumlah
     df.loc[cari_barang,'Stok'] = stok_Baru
 
@@ -62,6 +79,9 @@ def barang ():
         print(f'Kembalian anda adalah {kembalian}')
     else:
          print('uang anda kurang')
+    
+    #simpan ke data penjualan
+    Data_Penjualan.append(total)
 
       
 
@@ -112,6 +132,9 @@ def cart():
         return
 
     print(f'kembalian anda adalah = {kembalian}')
+
+    # Simpan ke data penjualan
+    Data_Penjualan.append(total_semua)
 
     # pengurangan stok setelah bayar
     for barang in cart:
