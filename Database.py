@@ -1,5 +1,5 @@
 import pandas as pd
-
+import os
 
 # Database utama
 df = pd.DataFrame({
@@ -8,6 +8,12 @@ df = pd.DataFrame({
     'Kode'  : [222,114,212,220,120,555],
     'Stok'  : [20,33,12,5,10,12]
 })
+
+#fitur save data
+if os.path.exists("database_stok.csv"):
+    df = pd.read_csv("database_stok.csv")
+else:
+    df.to_csv("database_stok.csv", index=False)
 
 
 
@@ -28,14 +34,34 @@ def laporan_penjualan ():
     else:
         print("\n===== LAPORAN PENJUALAN HARI INI =====")
         total_semua = sum(Data_Penjualan)
-        print(f'total semua penjualan hari ini adalaha = {total_semua}')
         jumlah_transaksi = len(Data_Penjualan)
-        print(f'jumlah transaksi hari ini adalah = {jumlah_transaksi}')
         rata_rata = total_semua/jumlah_transaksi
+        print(f'total semua penjualan hari ini adalaha = {total_semua}')
+        print(f'jumlah transaksi hari ini adalah = {jumlah_transaksi}')
         print(f'rata-rata transaksi hari ini adalah = {rata_rata}')
         for i, trx in enumerate(Data_Penjualan,start=1):
             print(f'{i}.Rp {trx}')
-    
+
+        user = input('Apakah anda ingin laporan ini di export ke file.txt (y/n): ')
+        if user.lower() == 'y':
+            export_laporan()
+            return
+
+#fitur export laporan            
+def export_laporan():
+    file = open('Laporan_penjualan.txt','w')
+    file.write("\n===== LAPORAN PENJUALAN HARI INI =====")
+    total_semua = sum(Data_Penjualan)
+    jumlah_transaksi = len(Data_Penjualan)
+    rata_rata = total_semua/jumlah_transaksi
+    file.write(f'total semua penjualan hari ini adalah = {total_semua}\n')
+    file.write(f'jumlah transaksi hari ini adalah = {jumlah_transaksi}\n')
+    file.write(f'rata-rata transaksi hari ini adalah = {rata_rata}\n')
+    for i, trx in enumerate(Data_Penjualan,start=1):
+        file.write(f'{i}.Rp {trx}\n')
+    file.close()
+    print('File berhasil di Exspor ke laporan_penjualan.txt')
+       
 
 #Fitur pemilihan barang
 def barang ():
@@ -52,20 +78,26 @@ def barang ():
           print('Kode tidak valid')
           return
     
+    #Pengecekan stok
+    stok = df[df['Kode'] == user].iloc[0]['Stok']
+    if jumlah > stok:
+      print('Stok tidak cukup')
+      return
+    
     total = item['Harga'] * jumlah
     kembalian = uang - total
-
+    
+    #pengecekan uang
+    if kembalian < 0:
+        print("Uang anad kurang, transaksi dibatalkan")
+        return
 
     #pengurangan stok
     cari_barang = df[df['Kode'] == user].index[0]
     stok_Lama =  df.loc[cari_barang,'Stok']
 
-    #Pengecekan stok
-    if jumlah > stok_Lama:
-      print('Stok tidak cukup')
-      return
 
-    #kuarangi stok
+    #kurangi stok
     stok_Baru = stok_Lama - jumlah
     df.loc[cari_barang,'Stok'] = stok_Baru
 
@@ -82,6 +114,10 @@ def barang ():
     
     #simpan ke data penjualan
     Data_Penjualan.append(total)
+
+    #simpan ke csv
+    df.to_csv("database_stok.csv", index=False)
+
 
       
 
@@ -148,7 +184,13 @@ def cart():
     for data in cart:
         print(data)
 
+    #simpan ke csv
+    df.to_csv("database_stok.csv", index=False)
+
+
         
 #fitur menu
 def lihat_data ():
+     global df
+     df=pd.read_csv('database_stok.csv')
      print(df)
