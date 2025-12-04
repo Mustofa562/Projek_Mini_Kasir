@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from datetime import datetime
 
 # Database utama
 df = pd.DataFrame({
@@ -8,6 +9,10 @@ df = pd.DataFrame({
     'Kode'  : [222,114,212,220,120,555],
     'Stok'  : [20,33,12,5,10,12]
 })
+
+#Tanggal Harian
+tanggal_hari_ini = datetime.now().strftime('%Y-%m-%d')
+
 
 #fitur save data
 if os.path.exists("database_stok.csv"):
@@ -36,7 +41,7 @@ def laporan_penjualan ():
         total_semua = sum(Data_Penjualan)
         jumlah_transaksi = len(Data_Penjualan)
         rata_rata = total_semua/jumlah_transaksi
-        print(f'total semua penjualan hari ini adalaha = {total_semua}')
+        print(f'total semua penjualan hari ini adalah = {total_semua}')
         print(f'jumlah transaksi hari ini adalah = {jumlah_transaksi}')
         print(f'rata-rata transaksi hari ini adalah = {rata_rata}')
         for i, trx in enumerate(Data_Penjualan,start=1):
@@ -113,14 +118,17 @@ def barang ():
          print('uang anda kurang')
     
     #simpan ke data penjualan
-    Data_Penjualan.append(total)
+    Data_Penjualan.append({
+        'total':total,
+        'tanggal': tanggal_hari_ini})
 
     #simpan ke csv
     df.to_csv("database_stok.csv", index=False)
 
+    
+
 
       
-
 
 
 # fitur cart 
@@ -170,7 +178,10 @@ def cart():
     print(f'kembalian anda adalah = {kembalian}')
 
     # Simpan ke data penjualan
-    Data_Penjualan.append(total_semua)
+    Data_Penjualan.append({
+        'total': total_semua,
+        'tanggal': tanggal_hari_ini
+    })
 
     # pengurangan stok setelah bayar
     for barang in cart:

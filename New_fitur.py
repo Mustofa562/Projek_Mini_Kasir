@@ -1,4 +1,5 @@
-from Database import df
+from Database import df,Data_Penjualan
+import pandas as pd
 
 
 # Fitur Tambah produk
@@ -21,6 +22,10 @@ def tambah_produk ():
     print('Produk berhasil ditambahkan')
     print(df)
 
+    #simpan ke csv
+    df.to_csv("database_stok.csv", index=False)
+
+
 # fitur hapus produk
 def hapus_produk():
     global df
@@ -34,11 +39,14 @@ def hapus_produk():
         return
 
     if user in df['Kode'].values:
-        df.loc[df['Kode'] != user].reset_index(drop=True)
+        df = df[df['Kode'] != user].reset_index(drop=True)
         print("Produk berhasil dihapus")
         print(df)
     else:
         print('ERROR Kode tidak ada')
+
+    #simpan ke csv
+    df.to_csv("database_stok.csv", index=False)
 
 #Fitur update Stok
 def Update_stok():
@@ -84,5 +92,52 @@ def Update_stok():
     else:
         print("Kode tidak ditemukan")
 
+    #simpan ke csv
+    df.to_csv("database_stok.csv", index=False)
+
     
+def Laporan_bulanan():
+    global Data_Penjualan
+
+    
+    if len(Data_Penjualan) == 0:
+        print("Belum ada data penjualan, laporan bulanan tidak bisa dibuat.")
+        return
+
+    df = pd.DataFrame(Data_Penjualan)
+    user = input('masukan tahun dan bulan (YYYY-MM) : ')
+
+
+    #filter berdasarkan bulan dan tahun
+    df['tanggal'] = pd.to_datetime(df['tanggal'])
+    bulan = pd.Period(user,freq='M')
+    df_filter = df[df['tanggal'].dt.to_period('M') == bulan]
+    
+
+
+    #Filter data
+    if len(df_filter) > 0 :
+        print(f'Bulan = {user}')
+        print("========= Total Penjualan Bulan Ini =========")
+        print(f"Total transakasi = {df_filter['total'].sum()}")
+        print(f'Jumlah transaksi = {len(df_filter)}')
+        print(f"Rata-rata transaksi = {df_filter['total'].mean():.2f}")
+       
+    else:
+        print("belum ada transaksi bulan ini")
+        return
+    
+    user1 = input('Apakah mau ke file bulanan (y/n):')
+    if user1.lower() == 'y':
+        file = open("Laporan_Penjualan_Bulanan.txt",'w')
+
+        file.write("========= Total Penjualan Bulan Ini =========\n")
+        file.write(f"Total transakasi = {df_filter['total'].sum()}\n")
+        file.write(f'Jumlah transaksi = {len(df_filter)}\n')
+        file.write(f"Rata-rata transaksi = {df_filter['total'].mean():.2f}\n")
+        file.close()
+        print("File Berhasil disimpan")
+
+
+
 
