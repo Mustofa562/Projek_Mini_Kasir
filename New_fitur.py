@@ -1,6 +1,6 @@
 from Database import df,Data_Penjualan
 import pandas as pd
-
+import matplotlib.pyplot as plt
 
 # Fitur Tambah produk
 def tambah_produk ():
@@ -139,5 +139,26 @@ def Laporan_bulanan():
         print("File Berhasil disimpan")
 
 
+def Grafik_penjualan():
+    global Data_Penjualan
 
+    if len(Data_Penjualan) == 0:
+        print("Belum ada data penjualan")
+        return
+    
+
+    df = pd.DataFrame(Data_Penjualan)
+    df['tanggal'] = pd.to_datetime(df['tanggal'])
+
+    # Hitung penjualan per hari
+    hari = df.groupby('tanggal')['total'].sum()
+
+    # Grafiknya
+    plt.bar(hari.index,hari.values,color='green')
+    plt.title("Grafik Penjualan Per-Hari")
+    plt.xlabel('Tanggal')
+    plt.ylabel('Total Penjualan')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show
 
