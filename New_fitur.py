@@ -146,6 +146,7 @@ def Grafik_penjualan():
         print("Belum ada data penjualan")
         return
     
+    user = input('Silahkan pilih untuk menampilkan Grafik (Perhari/Perbulan) : ')
 
     df = pd.DataFrame(Data_Penjualan)
     df['tanggal'] = pd.to_datetime(df['tanggal'])
@@ -154,11 +155,35 @@ def Grafik_penjualan():
     hari = df.groupby('tanggal')['total'].sum()
 
     # Grafiknya
-    plt.bar(hari.index,hari.values,color='green')
-    plt.title("Grafik Penjualan Per-Hari")
-    plt.xlabel('Tanggal')
-    plt.ylabel('Total Penjualan')
-    plt.xticks(rotation=45)
-    plt.tight_layout()
-    plt.show
+    if user.lower() == 'perhari':
+        plt.bar(hari.index,hari.values,color='green')
+        plt.title("Grafik Penjualan Per-Hari")
+        plt.xlabel('Tanggal')
+        plt.ylabel('Total Penjualan')
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
+    elif user.lower() == 'perbulan':
+        bulan = int(input('masukan tahun dan bulan (YYYY-MM) : '))
+        periode = pd.Period(bulan, freq='M')
+        df_filter = df[df['tanggal'].dt.to_period('M') == periode]
+
+        if df_filter.empty:
+            print("Belum ada transaksi pada bulan ini")
+            return
+
+        #filter data perbulan
+        hasil = df_filter.groupby(df_filter['tanggal'].dt.day)['total'].sum()
+        
+        plt.bar(hasil.index,hasil.values,color='red')
+        plt.title('Grafik Penjualan Per-Bulan')
+        plt.xlabel("Bulan")
+        plt.ylabel("Total Penjualan")
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
+    else:
+        print("Pilihan tidak valid")
+
+
 

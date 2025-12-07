@@ -38,7 +38,7 @@ def laporan_penjualan ():
         return 
     else:
         print("\n===== LAPORAN PENJUALAN HARI INI =====")
-        total_semua = sum(Data_Penjualan)
+        total_semua = sum(item['total'] for item in Data_Penjualan)
         jumlah_transaksi = len(Data_Penjualan)
         rata_rata = total_semua/jumlah_transaksi
         print(f'total semua penjualan hari ini adalah = {total_semua}')
