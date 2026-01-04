@@ -1,0 +1,14 @@
+# Abaikan file data yang berubah-ubah
+database_stok.csv
+riwayat_penjualan.csv
+
+# Abaikan file log
+*.log
+
+# Abaikan folder cache Python
+__pycache__/
+*.pyc
+
+# Abaikan environment
+env/
+venv/
